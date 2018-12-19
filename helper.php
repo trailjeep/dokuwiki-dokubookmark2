@@ -62,26 +62,26 @@ window.onload=initTagEntry;
 
   function parseWikiIdTemplate($idx, $data) {
     if (empty($data['name'])) {
-			$n='';
-			# check for single word selection -> use this
-			if (!strstr($data['selection'], ' ')) 
-				$n=$data['selection'];
-			# check if title is a not empty 
-			if (empty($n))
-				$n=$data['title'];
-			# if still empty.. mmh - use URL or use 'noname'
-			if (empty($n)) $n='noname';
+      $n='';
+      # check for single word selection -> use this
+      if (!strstr($data['selection'], ' '))
+        $n=$data['selection'];
+      # check if title is a not empty
+      if (empty($n))
+        $n=$data['title'];
+      # if still empty.. mmh - use URL or use 'noname'
+      if (empty($n)) $n='noname';
 
-			#->  replace ': ' and ASCIIfy
-			$n=strtr($n, ': ','__');
-			# [^\x20-\x7E] or [^A-Za-z_0-9]
-			$n=preg_replace('@[^A-Za-z_0-9]@', '', $n);
-			$n=preg_replace('@__*@', '_', $n);
-			# trim to 64 chars.
-			$data['name']=substr($n,0,64);
-		}
+      #->  replace ': ' and ASCIIfy
+      $n=strtr($n, ': ','__');
+      # [^\x20-\x7E] or [^A-Za-z_0-9]
+      $n=preg_replace('@[^A-Za-z_0-9]@', '', $n);
+      $n=preg_replace('@__*@', '_', $n);
+      # trim to 64 chars.
+      $data['name']=substr($n,0,64);
+    }
     # TODO: replace Placeholders alike ../../../inc/common.php pageTemplate() ?!
-	  return str_replace("@D@",$data['timestamp'],
+    return str_replace("@D@",$data['timestamp'],
            str_replace("@S@",$data['selection'],
            str_replace("@U@",$data['url'],
            str_replace("@N@",$data['name'],
@@ -212,18 +212,24 @@ window.onload=initTagEntry;
         $form->addElement(form_makeOpenTag('div', array('class'=>'editButtons')));
         if ($options['enable_save']) {
             $form->addHidden('sectoc', getSecurityToken());
-            $form->addElement(form_makeTag('input', array(
-                'id'        => 'edbtn__save',
-                'type'      => 'submit',
-                'name'      => 'do[dokubookmark]',
-                'value'     => $lang['btn_save'],
-                'class'     => 'button',
-                'title'     => $lang['btn_save'] . ' [S]',
-                'accesskey' => 's',
-                'tabindex'  => '4'
-            )));
+            // $form->addElement(form_makeTag('button', array(
+            //     'id'        => 'edbtn__save',
+            //     'type'      => 'submit',
+            //     'name'      => 'do[dokubookmark]',
+            //     'value'     => $lang['btn_save'],
+            //     'class'     => 'button',
+            //     'title'     => $lang['btn_save'] . ' [S]',
+            //     'accesskey' => 's',
+            //     'tabindex'  => '4'
+            // )));
+
+            // Fixed save button on bootstrap3 template
+              $form->addElement(form_makeButton('submit', 'save', $lang['btn_save'], array('id'=>'edbtn__save', 'accesskey'=>'p', 'tabindex'=>'5')));
+
 
         }
+
+
         $form->addElement(form_makeButton('submit', 'preview', $lang['btn_preview'], array('id'=>'edbtn__preview', 'accesskey'=>'p', 'tabindex'=>'5')));
         $form->addElement(form_makeButton('submit', 'draftdel', $lang['btn_cancel'], array('tabindex' => '6', 'onclick' => 'window.close()')));
         $form->addElement(form_makeCloseTag('div'));
