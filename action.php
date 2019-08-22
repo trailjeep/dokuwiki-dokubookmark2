@@ -3,7 +3,7 @@
  * dwlog.php
  * Dokuwiki website tagger - act like a weblog
  *
- * Version 0.6.0
+ * Version 0.7.0
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author     Robin Gareus <robin@gareus.org>
@@ -37,7 +37,7 @@ class action_plugin_dokubookmark extends DokuWiki_Action_Plugin {
     return array(
      'author' => 'Robin Gareus',
      'email'  => 'robin@gareus.org',
-     'date'   => '2011-12-20',
+     'date'   => '2019-08-22',
      'name'   => 'Dokubookmark',
      'desc'   => 'manage your bookmarks with this dokuwiki website tagger.',
      'url'    => 'http://gareus.org/wiki/dokubookmark',
