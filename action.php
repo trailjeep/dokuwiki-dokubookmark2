@@ -57,9 +57,9 @@ class action_plugin_dokubookmark extends DokuWiki_Action_Plugin {
   function _hookdo(&$event, $param) {
     global $lang;
 
-    if ($this->getConf('enable_save') && $event->data['dokubookmark'] == $lang['btn_save'] ) {
+    if ($this->getConf('enable_save') && $event->data == $lang['btn_save'] ) {
         $this->_save_bookmark($event);
-    } else if ($event->data['dokubookmark'] == "Save") {
+    } else if ($event->data == "Save") {
       global $ACT;
       $ACT="show";
       msg('Direct saving of weblog entries has been disabled. Use your browser back-button and retry.',-1);
