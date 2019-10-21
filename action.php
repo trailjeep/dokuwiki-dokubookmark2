@@ -25,6 +25,12 @@ if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 
 require_once(DOKU_PLUGIN.'action.php');
 
+namespace Application;
+
+require_once(DOKU_PLUGIN.'/src/Opengraph/Meta.php');
+require_once(DOKU_PLUGIN.'/src/Opengraph/Opengraph.php');
+require_once(DOKU_PLUGIN.'/src/Opengraph/Reader.php');
+
 /**
  *
  */
@@ -90,12 +96,17 @@ class action_plugin_dokubookmark extends DokuWiki_Action_Plugin {
       $foo= 'anonymous';
     }
 
+    use Opengraph;
+    $reader = new Opengraph\Reader();
+    $reader->parse(file_get_contents($url));
+
     $data=array(
       'baseurl'   => $conf['baseurl'].DOKU_BASE.'doku.php',
       'wikiidtpl' => $this->getConf('namespace'),
       'wikitpl'   => $wikitpl,
       'timestamp' => $timestamp,
-      'title'     => $title,
+      //'title'     => $title,
+      'title'     => $reader->getArrayCopy([og:title]),
       'url'       => $url,
       'foo'       => $foo,
       'selection' => $selection);
