@@ -25,11 +25,9 @@ if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 
 require_once(DOKU_PLUGIN.'action.php');
 
-namespace Application;
-
-require_once(DOKU_PLUGIN.'/src/Opengraph/Meta.php');
-require_once(DOKU_PLUGIN.'/src/Opengraph/Opengraph.php');
-require_once(DOKU_PLUGIN.'/src/Opengraph/Reader.php');
+require_once(DOKU_PLUGIN.'dokubookmark/src/Opengraph/Meta.php');
+require_once(DOKU_PLUGIN.'dokubookmark/src/Opengraph/Opengraph.php');
+require_once(DOKU_PLUGIN.'dokubookmark/src/Opengraph/Reader.php');
 
 /**
  *
@@ -96,17 +94,21 @@ class action_plugin_dokubookmark extends DokuWiki_Action_Plugin {
       $foo= 'anonymous';
     }
 
-    use Opengraph;
     $reader = new Opengraph\Reader();
     $reader->parse(file_get_contents($url));
+    $og = $reader->getArrayCopy();
+
+    if (!empty($og['og:title'])) { $title= $og['og:title']; }
 
     $data=array(
       'baseurl'   => $conf['baseurl'].DOKU_BASE.'doku.php',
       'wikiidtpl' => $this->getConf('namespace'),
       'wikitpl'   => $wikitpl,
       'timestamp' => $timestamp,
-      //'title'     => $title,
-      'title'     => $reader->getArrayCopy([og:title]),
+      'title'     => $title,
+      'desc'      => $og['og:description'],
+      'site'      => $og['og:site_name'],
+      'image'     => $og['og:image'][0]['og:image:url'],
       'url'       => $url,
       'foo'       => $foo,
       'selection' => $selection);
