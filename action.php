@@ -35,20 +35,6 @@ require_once(DOKU_PLUGIN.'dokubookmark/src/Opengraph/Reader.php');
 class action_plugin_dokubookmark extends DokuWiki_Action_Plugin {
  
   /**
-   * return some info
-   */
-  function getInfo(){
-    return array(
-     'author' => 'Robin Gareus',
-     'email'  => 'robin@gareus.org',
-     'date'   => '2019-08-22',
-     'name'   => 'Dokubookmark',
-     'desc'   => 'manage your bookmarks with this dokuwiki website tagger.',
-     'url'    => 'http://gareus.org/wiki/dokubookmark',
-     );
-  }
- 
-  /**
    * Register its handlers with the dokuwiki's event controller
    */
   public function register(Doku_Event_Handler $controller) {
