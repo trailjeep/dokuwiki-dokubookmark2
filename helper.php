@@ -19,21 +19,8 @@ function printHeader() {
     <?php tpl_metaheaders()?>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="shortcut icon" href="<?php echo DOKU_TPL?>images/favicon.ico" />
-
-    <script type="text/javascript">
-    /* <![CDATA[ */
-    function initTagEntry() {
-        document.getElementById('blogtng__tags').value = 'Bookmark, ';
-    }
-    /* ]]> */
-    </script>
     </head>
     <body>
-    <script type="text/javascript">
-    /* <![CDATA[ */
-    window.onload=initTagEntry;
-    /* ]]> */
-    </script>
     <div class="dokuwiki" style="background: #fff; border:0px; color: #000">
     <?php 
 }
