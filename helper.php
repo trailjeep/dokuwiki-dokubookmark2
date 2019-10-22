@@ -163,7 +163,7 @@ function printForm ($data, $options, $alltags = NULL) {
                 'value'   => $n,
                 'class'   => 'button',
                 'title'   => $n,
-                'onclick' => 'document.getElementById(\'i_id\').value=\''.escapeJSstring($id_).'\';document.getElementById(\'id\').value=\''.escapeJSstring($id_).'\';'.$additionalJs
+                'onclick' => 'presets()' //'document.getElementById(\'i_id\').value=\''.escapeJSstring($id_).'\';document.getElementById(\'id\').value=\''.escapeJSstring($id_).'\';'.$additionalJs
             )));
 
         $i++;
@@ -259,6 +259,9 @@ function printForm ($data, $options, $alltags = NULL) {
         <head>
         <script type="text/javascript">
         /* <![CDATA[ */
+        function presets() {
+            document.getElementById(\'i_id\').value=\''.escapeJSstring($id_).'\';document.getElementById(\'id\').value=\''.escapeJSstring($id_).'\';'.$additionalJs
+        }
         function postit() {
             f        = document.createElement('form');              
             f.method = 'post';                                      
