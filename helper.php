@@ -6,79 +6,73 @@
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author     Robin Gareus <robin@gareus.org>
  * @based_on   http://wiki.splitbrain.org/wiki:tips:weblog_bookmarklet by riny [at] bk [dot] ru
- */ 
+*/ 
 
-  /**
-   *  - TODO this should use the dokuwiki template header.
-   */
-  function printHeader() {
-  global $conf;
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
- "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
-<head>
-<title>Dokuwiki Website Tagger</title>
-<?php tpl_metaheaders()?>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link rel="shortcut icon" href="<?php echo DOKU_TPL?>images/favicon.ico" />
+// TODO this should use the dokuwiki template header.
+function printHeader() {
+    global $conf;
+    ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+    <head>
+    <title>Dokuwiki Website Tagger</title>
+    <?php tpl_metaheaders()?>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="shortcut icon" href="<?php echo DOKU_TPL?>images/favicon.ico" />
 
-<script type="text/javascript">
-/* <![CDATA[ */
-function initTagEntry() {
-    document.getElementById('blogtng__tags').value = 'Bookmark, ';
+    <script type="text/javascript">
+    /* <![CDATA[ */
+    function initTagEntry() {
+        document.getElementById('blogtng__tags').value = 'Bookmark, ';
+    }
+    /* ]]> */
+    </script>
+    </head>
+    <body>
+    <script type="text/javascript">
+    /* <![CDATA[ */
+    window.onload=initTagEntry;
+    /* ]]> */
+    </script>
+    <div class="dokuwiki" style="background: #fff; border:0px; color: #000">
+    <?php 
 }
-/* ]]> */
-</script>
-</head>
-<body>
-<script type="text/javascript">
-/* <![CDATA[ */
-window.onload=initTagEntry;
-/* ]]> */
-</script>
-<div class="dokuwiki" style="background: #fff; border:0px; color: #000">
-<?php 
-  }
 
+function printFooter() { ?>
+    </div> <!-- class="dokuwiki" -->
+    </body>
+    </html>
+    <?php 
+}
 
-  /**
-   *
-   */
-  function printFooter() { ?>
-</div> <!-- class="dokuwiki" -->
-</body>
-</html>
-<?php 
-  }
-
-  function escapeJSstring ($o) {
-    return ( # TODO: use JSON ?!
-      str_replace("\n", '\\n', 
-      str_replace("\r", '', 
-      str_replace('\'', '\\\'', 
-      str_replace('\\', '\\\\', 
+    function escapeJSstring ($o) {
+        return ( # TODO: use JSON ?!
+        str_replace("\n", '\\n', 
+        str_replace("\r", '', 
+        str_replace('\'', '\\\'', 
+        str_replace('\\', '\\\\', 
         $o)))));
-  }
+    }
 
-  function parseWikiIdTemplate($idx, $data) {
-    if (empty($data['name'])) {
-      $n='';
-      # check for single word selection -> use this
-      if (!strstr($data['selection'], ' '))
+    function parseWikiIdTemplate($idx, $data) {
+        if (empty($data['name'])) {
+            $n='';
+            # check for single word selection -> use this
+        if (!strstr($data['selection'], ' '))
         $n=$data['selection'];
-      # check if title is a not empty
-      if (empty($n))
+        # check if title is a not empty
+        if (empty($n))
         $n=$data['title'];
-      # if still empty.. mmh - use URL or use 'noname'
-      if (empty($n)) $n='noname';
+        # if still empty.. mmh - use URL or use 'noname'
+        if (empty($n)) $n='noname';
 
-      #->  replace ': ' and ASCIIfy
-      $n=strtr($n, ': ','__');
-      # [^\x20-\x7E] or [^A-Za-z_0-9]
-      $n=preg_replace('@[^A-Za-z_0-9]@', '', $n);
-      $n=preg_replace('@__*@', '_', $n);
-      # trim to 64 chars.
-      $data['name']=substr($n,0,64);
+        #->  replace ': ' and ASCIIfy
+        $n=strtr($n, ': ','__');
+        # [^\x20-\x7E] or [^A-Za-z_0-9]
+        $n=preg_replace('@[^A-Za-z_0-9]@', '', $n);
+        $n=preg_replace('@__*@', '_', $n);
+        # trim to 64 chars.
+        $data['name']=substr($n,0,64);
     }
     # TODO: replace Placeholders alike ../../../inc/common.php pageTemplate() ?!
     return str_replace("@D@",$data['timestamp'],
@@ -87,13 +81,9 @@ window.onload=initTagEntry;
            str_replace("@N@",$data['name'],
            str_replace("@F@",$data['foo'],
            str_replace("@T@",$data['title'], $idx))))));
-  }
+}
 
-
-  /**
-   *
-   */
-  function printForm ($data, $options, $alltags = NULL) {
+function printForm ($data, $options, $alltags = NULL) {
     global $ID;
     global $REV;
     global $DATE;
@@ -147,7 +137,6 @@ window.onload=initTagEntry;
     $form->addHidden('suffix', $SUF);
     $form->addHidden('changecheck', $check);
 
-
     $dataNew = array('form' => $form,
                      'wr'   => $wr,
                      'media_manager' => true,
@@ -161,23 +150,23 @@ window.onload=initTagEntry;
     $form->addElement(form_makeTextField('id', htmlentities(parseWikiIdTemplate($data['wikiidtpl'], $data), ENT_COMPAT, 'UTF-8'), 'Id:', 'i_id'));
 
     if ($options['preset']) {
-      $form->addElement('<br/>&nbsp;Preset:');
-      $i=0;
-      foreach ($options['presets'] as $n => $ps)  {
-        $id_       = parseWikiIdTemplate($ps['id'], $data);
-        $wikitext_ = parseWikiIdTemplate($ps['tpl'], $data);
+        $form->addElement('<br/>&nbsp;Preset:');
+        $i=0;
+        foreach ($options['presets'] as $n => $ps)  {
+            $id_       = parseWikiIdTemplate($ps['id'], $data);
+            $wikitext_ = parseWikiIdTemplate($ps['tpl'], $data);
 
-        if ($i>0)
-            $form->addElement(',');
-        else 
+            if ($i>0)
+                $form->addElement(',');
+            else 
+                $form->addElement('&nbsp;');
+
             $form->addElement('&nbsp;');
-
-        $form->addElement('&nbsp;');
-        $additionalJs = '';
-        if (!empty($wikitext_)) {
-            $additionalJs = 'document.getElementById(\'wiki__text\').value=\''.escapeJSstring($wikitext_).'\';';
-        }
-        $form->addElement(form_makeTag('input', array(
+            $additionalJs = '';
+            if (!empty($wikitext_)) {
+                $additionalJs = 'document.getElementById(\'wiki__text\').value=\''.escapeJSstring($wikitext_).'\';';
+            }
+            $form->addElement(form_makeTag('input', array(
                 'type'    => 'button',
                 'value'   => $n,
                 'class'   => 'button',
@@ -186,10 +175,9 @@ window.onload=initTagEntry;
             )));
 
         $i++;
-      } 
+    } 
     } ### done Preset Buttons
     $form->addElement(form_makeCloseTag('p'));
-
 
     if ($data['target'] !== 'section') {
         // Only emit event if page is writable, section edit data is valid and
@@ -202,7 +190,6 @@ window.onload=initTagEntry;
     //if (isset($data['intro_locale'])) {
     //    echo p_locale_xhtml($data['intro_locale']);
     //}
-
 
     $form->addHidden('target', $data['target']);
     $form->addElement(form_makeOpenTag('div', array('id'=>'wiki__editbar')));
@@ -228,7 +215,6 @@ window.onload=initTagEntry;
 
 
         }
-
 
         $form->addElement(form_makeButton('submit', 'preview', $lang['btn_preview'], array('id'=>'edbtn__preview', 'accesskey'=>'p', 'tabindex'=>'5')));
         $form->addElement(form_makeButton('submit', 'draftdel', $lang['btn_cancel'], array('tabindex' => '6', 'onclick' => 'window.close()')));
@@ -262,69 +248,64 @@ window.onload=initTagEntry;
     <div id="draft__status"><?php if(!empty($INFO['draft'])) echo $lang['draftdate'].' '.dformat();?></div>
     <div id="tool__bar"><?php if ($wr && $data['media_manager']){?><a href="<?php echo DOKU_BASE?>lib/exe/mediamanager.php?ns=<?php echo $INFO['namespace']?>"
         target="_blank"><?php echo $lang['mediaselect'] ?></a><?php }?></div>
-
     </div>
     <?php
 
     html_form('edit', $form);
     print '</div>'.NL;
 
-  }
+}
 
+// unused javascript redirect/POST - 
+// could be made into a non-interactive bookmarklet -
+    function printPost($targeturl, $path, $wikiid, $timestamp, $title, $wikitext) {
+        ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+        <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <head>
+        <script type="text/javascript">
+        /* <![CDATA[ */
+        function postit() {
+            f        = document.createElement('form');              
+            f.method = 'post';                                      
+            f.action = '<?php echo $targeturl;?>';
 
-  /**
-   *  - unused javascript redirect/POST - 
-   *
-   *  - could be made into a non-interactive bookmarklet -
-   */
-  function printPost($targeturl, $path, $wikiid, $timestamp, $title, $wikitext) {
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
- "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<head>
-<script type="text/javascript">
-/* <![CDATA[ */
-function postit() {
-  f        = document.createElement('form');              
-  f.method = 'post';                                      
-  f.action = '<?php echo $targeturl;?>';
+            i0       = document.createElement('input');             
+            i0.type  = 'hidden';                                      
+            i0.name  = 'wikitext';                                      
+            i0.value = '<?php echo implode('\n', explode("\n",str_replace("'","\\'",$wikitext)));?>';
 
-  i0       = document.createElement('input');             
-  i0.type  = 'hidden';                                      
-  i0.name  = 'wikitext';                                      
-  i0.value = '<?php echo implode('\n', explode("\n",str_replace("'","\\'",$wikitext)));?>';
-                                                          
-  i1       = document.createElement('input');
-  i1.type  = 'hidden';                                    
-  i1.name  = 'do';
-  i1.value = 'preview';
+            i1       = document.createElement('input');
+            i1.type  = 'hidden';                                    
+            i1.name  = 'do';
+            i1.value = 'preview';
 
-  i3       = document.createElement('input');
-  i3.type  = 'hidden';                                    
-  i3.name  = 'summary';
-  i3.value = '<?php echo str_replace("'","\\'",rawurlencode($title));?>';
+            i3       = document.createElement('input');
+            i3.type  = 'hidden';                                    
+            i3.name  = 'summary';
+            i3.value = '<?php echo str_replace("'","\\'",rawurlencode($title));?>';
 
-  i4       = document.createElement('input');
-  i4.type  = 'hidden';                                    
-  i4.name  = 'sectok';
-  i4.value = '<?php echo getSecurityToken();?>';
+            i4       = document.createElement('input');
+            i4.type  = 'hidden';                                    
+            i4.name  = 'sectok';
+            i4.value = '<?php echo getSecurityToken();?>';
 
-  f.appendChild(i0);
-  f.appendChild(i1);
-  f.appendChild(i3);
-  f.appendChild(i4);
-  b = document.getElementsByTagName('body')[0];
-  b.appendChild(f);
-  f.submit();
-  }
-/* ]]> */
-</script>
-<body onload="postit();">
-</body>
-</html>
-<?php
-  }
+            f.appendChild(i0);
+            f.appendChild(i1);
+            f.appendChild(i3);
+            f.appendChild(i4);
+            b = document.getElementsByTagName('body')[0];
+            b.appendChild(f);
+            f.submit();
+        }
+        /* ]]> */
+        </script>
+        <body onload="postit();">
+        </body>
+        </html>
+        <?php
+    }
 
-//Setup VIM: ex: et ts=2 :
+//Setup VIM: ex: et ts=4 :
