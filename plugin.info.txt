@@ -1,7 +1,7 @@
-base    dokubookmark2
-authors Robin Gareus, trailjeep
-email   robin@gareus.org, trailjeep@gmail.com
-date    2019-10-17
-name    DokuBookmark2
-desc    manage your bookmarks with this dokuwiki website tagger.
-url     https://www.dokuwiki.org/plugin:dokubookmark2
+base	dokubookmark2
+author	Robin Gareus, trailjeep
+email	robin@gareus.org, trailjeep@gmail.com
+date	2019-10-17
+name	DokuBookmark2
+desc	manage your bookmarks with this dokuwiki website tagger.
+url		https://www.dokuwiki.org/plugin:dokubookmark2
