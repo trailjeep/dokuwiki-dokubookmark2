@@ -21,7 +21,7 @@ function printHeader() {
     <link rel="shortcut icon" href="<?php echo DOKU_TPL?>images/favicon.ico" />
     </head>
     <body>
-    <div class="dokuwiki" style="background: #fff; border:0px; color: #000">
+    <div class="dokuwiki" style="background: @ini_background_neu; border:0px; color: @ini_text_neu">
     <?php 
 }
 
