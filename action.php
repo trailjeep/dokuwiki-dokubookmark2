@@ -31,182 +31,177 @@ require_once(DOKU_PLUGIN.'dokubookmark2/src/Opengraph/Reader.php');
 
 class action_plugin_dokubookmark2 extends DokuWiki_Action_Plugin {
  
-// Register its handlers with the dokuwiki's event controller
-public function register(Doku_Event_Handler $controller) {
-    $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE',  $this, '_hookdo');
-}
-
-function _hookdo(&$event, $param) {
-    global $lang;
-
-    if ($this->getConf('enable_save') && $event->data == $lang['btn_save'] ) {
-        $this->_save_bookmark($event);
-    } else if ($event->data == "Save") {
-        global $ACT;
-        $ACT="show";
-        msg('Direct saving of weblog entries has been disabled. Use your browser back-button and retry.',-1);
-    } else if ($event->data == 'dokubookmark2') {
-        $this->_bookmarkpage(); # this function will call exit();
-    }
-}
-
-function _bookmarkpage() {
-    global $conf;
-    require_once(DOKU_PLUGIN.'dokubookmark2/helper.php');
-
-    // Parse and prepare variables.
-    $selection = rawurldecode($_GET['te']);  // selected text
-    $url       = rawurldecode($_GET['ur']);  // URL
-    $title     = rawurldecode($_GET['ti']);  // page title
-    $timestamp = date($this->getConf('dateformat')); 
-
-    #$wikitpl = "====== @T@ ======\n[[@U@]]\n----\n@S@\n\n{{tag>Bookmark}}"; 
-    #$wikitpl = "====== @T@ ======\n~~META:url=@U@~~\n@S@\n\n{{tag>Bookmark}}"; 
-    $wikitpl  = str_replace('\n',"\n", $this->getConf('wikitemplate'));
-
-    $foo = $_SERVER['REMOTE_USER'];
-    if (!isset($foo) || empty($foo)) {
-      $foo= 'anonymous';
+    // Register its handlers with the dokuwiki's event controller
+    public function register(Doku_Event_Handler $controller) {
+        $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE',  $this, '_hookdo');
     }
 
-    $reader = new Opengraph\Reader();
-    $reader->parse(file_get_contents($url));
-    $og = $reader->getArrayCopy();
+    function _hookdo(&$event, $param) {
+        global $lang;
 
-    if (!empty($og['og:title'])) { $title= $og['og:title']; }
-
-    $data=array(
-        'baseurl'   => $conf['baseurl'].DOKU_BASE.'doku.php',
-        'wikiidtpl' => $this->getConf('namespace'),
-        'wikitpl'   => $wikitpl,
-        'timestamp' => $timestamp,
-        'title'     => $title,
-        'desc'      => $og['og:description'],
-        'site'      => $og['og:site_name'],
-        'image'     => $og['og:image'][0]['og:image:url'],
-        'url'       => $url,
-        'foo'       => $foo,
-        'selection' => $selection
-    );
-
-    $dwtpl=pageTemplate(array(parseWikiIdTemplate($data['wikiidtpl'], $data)));
-    if ($dwtpl) {
-        $data['wikitpl'] = $dwtpl;
+        if ($this->getConf('enable_save') && $event->data == $lang['btn_save'] ) {
+            $this->_save_bookmark($event);
+        } else if ($event->data == "Save") {
+            global $ACT;
+            $ACT="show";
+            msg('Direct saving of weblog entries has been disabled. Use your browser back-button and retry.',-1);
+        } else if ($event->data == 'dokubookmark2') {
+            $this->_bookmarkpage(); # this function will call exit();
+        }
     }
 
-    # parse Preset configuration
-    $cfg_presets=array();
-    foreach (explode(';', trim($this->getConf('presets'))) as $p) {
-        $l=explode('=',$p,2);
-        $d=explode('|',$l[1],2);
-        if (empty($d[0]) || empty($l[0])) continue;
-        $tpl='';
-        if (!empty($d[1])) {
-	        # TODO: optionally specify template-file instead of 'namespace:_template.txt'
-            #$file = wikiFN($d[1]);
-            #if (@file_exists($file)){
-            #   $tpl = io_readFile($file);
-            # TODO: replace Placeholders alike ../../../inc/common.php pageTemplate() ?!
-        #} else {
-            $tpl = pageTemplate(array($d[1])); 
-        #}
+    function _bookmarkpage() {
+        global $conf;
+        require_once(DOKU_PLUGIN.'dokubookmark2/helper.php');
+
+        // Parse and prepare variables.
+        $selection = rawurldecode($_GET['te']);  // selected text
+        $url       = rawurldecode($_GET['ur']);  // URL
+        $title     = rawurldecode($_GET['ti']);  // page title
+        $timestamp = date($this->getConf('dateformat')); 
+
+        #$wikitpl = "====== @T@ ======\n[[@U@]]\n----\n@S@\n\n{{tag>Bookmark}}"; 
+        #$wikitpl = "====== @T@ ======\n~~META:url=@U@~~\n@S@\n\n{{tag>Bookmark}}"; 
+        $wikitpl  = str_replace('\n',"\n", $this->getConf('wikitemplate'));
+
+        $foo = $_SERVER['REMOTE_USER'];
+        if (!isset($foo) || empty($foo)) {
+            $foo= 'anonymous';
         }
 
-      # allow ID-only presets, if template ns == '-' 
-      if (empty($tpl) && $d[1] != '-') {
-        $tpl = str_replace('\n',"\n", $this->getConf('wikitemplate'));
-      }
+        $reader = new Opengraph\Reader();
+        $reader->parse(file_get_contents($url));
+        $og = $reader->getArrayCopy();
 
-      $n=parseWikiIdTemplate($d[0], $data);
-      $file = wikiFN($n);
+        if (!empty($og['og:title'])) { $title= $og['og:title']; }
 
-		# TODO: check if we'd be allowed to create/edit this page
-		# else save will fail later :( - or hide this preset,
-		# or push session on stack and opt to log-on.
+        $data=array(
+            'baseurl'   => $conf['baseurl'].DOKU_BASE.'doku.php',
+            'wikiidtpl' => $this->getConf('namespace'),
+            'wikitpl'   => $wikitpl,
+            'timestamp' => $timestamp,
+            'title'     => $title,
+            'desc'      => $og['og:description'],
+            'site'      => $og['og:site_name'],
+            'image'     => $og['og:image'][0]['og:image:url'],
+            'url'       => $url,
+            'foo'       => $foo,
+            'selection' => $selection
+        );
 
-      # check if a page with this preset's ID already exists
-      if (@file_exists($file)){
-        msg('preset \''.$l[0].'\' - a page with <a href="'.wl($n).'">this ID</a> already exists.', -1);
-      } else {
-        $cfg_presets[$l[0]]=array('id' => $d[0], 'tpl' => $tpl); 
-      }
+        $dwtpl=pageTemplate(array(parseWikiIdTemplate($data['wikiidtpl'], $data)));
+        if ($dwtpl) {
+            $data['wikitpl'] = $dwtpl;
+        }
 
-    } # done.  now $cfg_presets holds an array of presets;
+        # parse Preset configuration
+        $cfg_presets=array();
+        foreach (explode(';', trim($this->getConf('presets'))) as $p) {
+            $l=explode('=',$p,2);
+            $d=explode('|',$l[1],2);
+            if (empty($d[0]) || empty($l[0])) continue;
+            $tpl='';
+            if (!empty($d[1])) {
+    	        # TODO: optionally specify template-file instead of 'namespace:_template.txt'
+                #$file = wikiFN($d[1]);
+                #if (@file_exists($file)){
+                #   $tpl = io_readFile($file);
+                # TODO: replace Placeholders alike ../../../inc/common.php pageTemplate() ?!
+            #} else {
+                $tpl = pageTemplate(array($d[1])); 
+            #}
+            }
+            # allow ID-only presets, if template ns == '-' 
+            if (empty($tpl) && $d[1] != '-') {
+                $tpl = str_replace('\n',"\n", $this->getConf('wikitemplate'));
+            }
 
-    $options   = array(
-      'enable_save' => $this->getConf('enable_save'),
-      'preset'      => count($cfg_presets)>0, 
-      'presets'     => $cfg_presets
-    );
+            $n=parseWikiIdTemplate($d[0], $data);
+            $file = wikiFN($n);
 
-    # output the page and form
+    		# TODO: check if we'd be allowed to create/edit this page
+	    	# else save will fail later :( - or hide this preset,
+		    # or push session on stack and opt to log-on.
 
-    printHeader();
-    if(function_exists('html_msgarea')){
-      html_msgarea();
-    }
-    printForm($data, $options, null);
-    printFooter();
-    exit;
-  } 
+            # check if a page with this preset's ID already exists
+            if (@file_exists($file)){
+                msg('preset \''.$l[0].'\' - a page with <a href="'.wl($n).'">this ID</a> already exists.', -1);
+            } else {
+                $cfg_presets[$l[0]]=array('id' => $d[0], 'tpl' => $tpl);
+            }
+        } # done.  now $cfg_presets holds an array of presets;
 
-  /**
-   *
-   * - used only if 'enabled_save' is configured.
-   */
-  function _save_bookmark(&$event) {
-    global $conf;
-    global $ACT;
-    global $ID;
+        $options   = array(
+            'enable_save' => $this->getConf('enable_save'),
+            'preset'      => count($cfg_presets)>0,
+            'presets'     => $cfg_presets
+        );
 
-    // we can handle it -> prevent others
-    $event->stopPropagation();
-    $event->preventDefault();
-    
-    // check if we are allowed to create this file
-    if (auth_quickaclcheck($ID) < AUTH_CREATE){
-      $ACT = 'show';
-      msg('You may not create bookmarks in this namespace - go back with your browser\'s back-button and change the page ID.',-1);
-      return;
-    }
+        # output the page and form
 
-    $file = wikiFN($ID);
-    
-    //check if locked by anyone - if not lock for my self      
-    if (checklock($ID)){
-      $ACT = 'locked';
-      #return;  ??
-    } else {
-      lock($ID);
-    }
+        printHeader();
+        if(function_exists('html_msgarea')){
+            html_msgarea();
+        }
+        printForm($data, $options, null);
+        printFooter();
+        exit;
+    } 
 
-    if (@file_exists($file)){
-      $ACT = 'edit';
-      msg('Page did already exist. entered edit mode. feel free to go back with your browser\'s back-button and change the page ID.',-1);
-      return;
-    }
-  
-    global $TEXT;
-    global $INFO;
-    global $conf;
-    
-    $TEXT = $_POST['wikitext'];
-    if (!$TEXT) {
-      $ACT = 'show';
-      msg('empty wiki page text. page has not been created.',-1);
-      return;
-    }
-    #if (!$TEXT) 
-    #  $TEXT = pageTemplate($ID);# FIXME: evaluate $this->conf('namespace') ?!
-    #if (!$TEXT) $TEXT = "====== $title ======\n\n\n\n".
-    #                    "{{tag>Bookmark}}\n"; # TODO wrap $_GET['ur']; ?!
+    // used only if 'enabled_save' is configured.
+    function _save_bookmark(&$event) {
+        global $conf;
+        global $ACT;
+        global $ID;
 
-    if(checkSecurityToken()){
-      $ACT = act_save($ACT);
-    } else {
-      $ACT = 'show';
-      msg('Security Token did not match. Possible CSRF attack.',-1);
-    }
-  } 
+        // we can handle it -> prevent others
+        $event->stopPropagation();
+        $event->preventDefault();
+
+        // check if we are allowed to create this file
+        if (auth_quickaclcheck($ID) < AUTH_CREATE){
+            $ACT = 'show';
+            msg('You may not create bookmarks in this namespace - go back with your browser\'s back-button and change the page ID.',-1);
+            return;
+        }
+
+        $file = wikiFN($ID);
+
+        //check if locked by anyone - if not lock for my self      
+        if (checklock($ID)){
+            $ACT = 'locked';
+            #return;  ??
+        } else {
+            lock($ID);
+            }
+
+        if (@file_exists($file)){
+            $ACT = 'edit';
+            msg('Page did already exist. entered edit mode. feel free to go back with your browser\'s back-button and change the page ID.',-1);
+            return;
+        }
+
+        global $TEXT;
+        global $INFO;
+        global $conf;
+
+        $TEXT = $_POST['wikitext'];
+        if (!$TEXT) {
+            $ACT = 'show';
+            msg('empty wiki page text. page has not been created.',-1);
+            return;
+        }
+        #if (!$TEXT) 
+        #  $TEXT = pageTemplate($ID);# FIXME: evaluate $this->conf('namespace') ?!
+        #if (!$TEXT) $TEXT = "====== $title ======\n\n\n\n".
+        #                    "{{tag>Bookmark}}\n"; # TODO wrap $_GET['ur']; ?!
+
+        if(checkSecurityToken()){
+            $ACT = act_save($ACT);
+        } else {
+            $ACT = 'show';
+            msg('Security Token did not match. Possible CSRF attack.',-1);
+        }
+    } 
 }
 //Setup VIM: ex: et ts=4 :
