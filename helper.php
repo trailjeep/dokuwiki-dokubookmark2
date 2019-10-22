@@ -60,7 +60,7 @@ function printFooter() { ?>
         $n=strtr($n, '/','__');
         # [^\x20-\x7E] or [^A-Za-z_0-9]
         $n=preg_replace('@[^A-Za-z_0-9]@', '', $n);
-        $n=preg_replace('@__*@', '_', $n);
+        $n=preg_replace('@__*@', $sepchar, $n);
         # trim to 64 chars.
         $data['name']=substr($n,0,64);
     }
