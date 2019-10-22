@@ -54,7 +54,10 @@ function printFooter() { ?>
         if (empty($n)) $n='noname';
 
         #->  replace ': ' and ASCIIfy
+        global $conf;
+        $sepchar = $conf['sepchar'];
         $n=strtr($n, ': ','__');
+        $n=strtr($n, '/','__');
         # [^\x20-\x7E] or [^A-Za-z_0-9]
         $n=preg_replace('@[^A-Za-z_0-9]@', '', $n);
         $n=preg_replace('@__*@', '_', $n);
