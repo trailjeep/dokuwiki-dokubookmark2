@@ -25,14 +25,14 @@ if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 
 require_once(DOKU_PLUGIN.'action.php');
 
-require_once(DOKU_PLUGIN.'dokubookmark/src/Opengraph/Meta.php');
-require_once(DOKU_PLUGIN.'dokubookmark/src/Opengraph/Opengraph.php');
-require_once(DOKU_PLUGIN.'dokubookmark/src/Opengraph/Reader.php');
+require_once(DOKU_PLUGIN.'dokubookmark2/src/Opengraph/Meta.php');
+require_once(DOKU_PLUGIN.'dokubookmark2/src/Opengraph/Opengraph.php');
+require_once(DOKU_PLUGIN.'dokubookmark2/src/Opengraph/Reader.php');
 
 /**
  *
  */
-class action_plugin_dokubookmark extends DokuWiki_Action_Plugin {
+class action_plugin_dokubookmark2 extends DokuWiki_Action_Plugin {
  
   /**
    * Register its handlers with the dokuwiki's event controller
@@ -53,7 +53,7 @@ class action_plugin_dokubookmark extends DokuWiki_Action_Plugin {
       global $ACT;
       $ACT="show";
       msg('Direct saving of weblog entries has been disabled. Use your browser back-button and retry.',-1);
-    } else if ($event->data == 'dokubookmark') {
+    } else if ($event->data == 'dokubookmark2') {
         $this->_bookmarkpage(); # this function will call exit();
     }
   }
@@ -63,7 +63,7 @@ class action_plugin_dokubookmark extends DokuWiki_Action_Plugin {
    */
   function _bookmarkpage() {
     global $conf;
-    require_once(DOKU_PLUGIN.'dokubookmark/helper.php');
+    require_once(DOKU_PLUGIN.'dokubookmark2/helper.php');
 
     // Parse and prepare variables.
     $selection = rawurldecode($_GET['te']);  // selected text
