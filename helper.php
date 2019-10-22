@@ -21,7 +21,7 @@ function printHeader() {
     <link rel="shortcut icon" href="<?php echo DOKU_TPL?>images/favicon.ico" />
     </head>
     <body>
-    <div class="dokuwiki" style="background: @ini_background_neu; border:0px; color: @ini_text_neu">
+    <div id="plugin__dwkbkmk2_container" class="dokuwiki">
     <?php 
 }
 
@@ -163,7 +163,7 @@ function printForm ($data, $options, $alltags = NULL) {
                 'value'   => $n,
                 'class'   => 'button',
                 'title'   => $n,
-                'onclick' => 'presets()' //'document.getElementById(\'i_id\').value=\''.escapeJSstring($id_).'\';document.getElementById(\'id\').value=\''.escapeJSstring($id_).'\';'.$additionalJs
+                'onclick' => 'document.getElementById(\'i_id\').value=\''.escapeJSstring($id_).'\';document.getElementById(\'id\').value=\''.escapeJSstring($id_).'\';'.$additionalJs
             )));
 
         $i++;
@@ -234,7 +234,7 @@ function printForm ($data, $options, $alltags = NULL) {
         echo 'textChanged = ' . ($mod ? 'true' : 'false');
         echo '//--><!]]></script>' . NL;
     } ?>
-    <div style="width:99%;">
+    <div id="plugin__dwkbkmk2_body">
 
     <div class="toolbar">
     <div id="draft__status"><?php if(!empty($INFO['draft'])) echo $lang['draftdate'].' '.dformat();?></div>
@@ -259,9 +259,6 @@ function printForm ($data, $options, $alltags = NULL) {
         <head>
         <script type="text/javascript">
         /* <![CDATA[ */
-        function presets() {
-            document.getElementById(\'i_id\').value=\''.escapeJSstring($id_).'\';document.getElementById(\'id\').value=\''.escapeJSstring($id_).'\';'.$additionalJs
-        }
         function postit() {
             f        = document.createElement('form');              
             f.method = 'post';                                      

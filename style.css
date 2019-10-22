@@ -1,0 +1,7 @@
+div#plugin__dwkbkmk2_container {
+	background: @ini_background_neu; border: 0px; color: @ini_text_neu;
+}
+
+div#plugin__dwkbkmk2_body {
+	width: 99%;
+}
