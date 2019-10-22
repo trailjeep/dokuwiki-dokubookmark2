@@ -16,7 +16,7 @@
  *  Change the window.open statement to reflect the location of your dokuwiki script.
  *
  * BOOKMARKLET : 
- *  javascript:Q=document.selection?document.selection.createRange().text:document.getSelection(); void(window.open('http://your.host/doku.php?do=dokubookmark&te='+encodeURIComponent(Q)+'&ur='+ encodeURIComponent(location.href)+'&ti='+encodeURIComponent(document.title),'dokuwikiadd','scrollbars=yes,resizable=yes,toolbars=yes,width=200,height=100,left=200,top=200,status=yes'));
+ *  javascript:Q=document.selection?document.selection.createRange().text:document.getSelection(); void(window.open('http://your.host/doku.php?do=dokubookmark2&te='+encodeURIComponent(Q)+'&ur='+ encodeURIComponent(location.href)+'&ti='+encodeURIComponent(document.title),'dokuwikiadd','scrollbars=yes,resizable=yes,toolbars=yes,width=200,height=100,left=200,top=200,status=yes'));
  *
  */ 
  
@@ -29,39 +29,28 @@ require_once(DOKU_PLUGIN.'dokubookmark2/src/Opengraph/Meta.php');
 require_once(DOKU_PLUGIN.'dokubookmark2/src/Opengraph/Opengraph.php');
 require_once(DOKU_PLUGIN.'dokubookmark2/src/Opengraph/Reader.php');
 
-/**
- *
- */
 class action_plugin_dokubookmark2 extends DokuWiki_Action_Plugin {
  
-  /**
-   * Register its handlers with the dokuwiki's event controller
-   */
-  public function register(Doku_Event_Handler $controller) {
+// Register its handlers with the dokuwiki's event controller
+public function register(Doku_Event_Handler $controller) {
     $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE',  $this, '_hookdo');
-  }
+}
 
-  /**
-   * 
-   */
-  function _hookdo(&$event, $param) {
+function _hookdo(&$event, $param) {
     global $lang;
 
     if ($this->getConf('enable_save') && $event->data == $lang['btn_save'] ) {
         $this->_save_bookmark($event);
     } else if ($event->data == "Save") {
-      global $ACT;
-      $ACT="show";
-      msg('Direct saving of weblog entries has been disabled. Use your browser back-button and retry.',-1);
+        global $ACT;
+        $ACT="show";
+        msg('Direct saving of weblog entries has been disabled. Use your browser back-button and retry.',-1);
     } else if ($event->data == 'dokubookmark2') {
         $this->_bookmarkpage(); # this function will call exit();
     }
-  }
+}
 
-  /**
-   * 
-   */
-  function _bookmarkpage() {
+function _bookmarkpage() {
     global $conf;
     require_once(DOKU_PLUGIN.'dokubookmark2/helper.php');
 
@@ -87,41 +76,41 @@ class action_plugin_dokubookmark2 extends DokuWiki_Action_Plugin {
     if (!empty($og['og:title'])) { $title= $og['og:title']; }
 
     $data=array(
-      'baseurl'   => $conf['baseurl'].DOKU_BASE.'doku.php',
-      'wikiidtpl' => $this->getConf('namespace'),
-      'wikitpl'   => $wikitpl,
-      'timestamp' => $timestamp,
-      'title'     => $title,
-      'desc'      => $og['og:description'],
-      'site'      => $og['og:site_name'],
-      'image'     => $og['og:image'][0]['og:image:url'],
-      'url'       => $url,
-      'foo'       => $foo,
-      'selection' => $selection);
+        'baseurl'   => $conf['baseurl'].DOKU_BASE.'doku.php',
+        'wikiidtpl' => $this->getConf('namespace'),
+        'wikitpl'   => $wikitpl,
+        'timestamp' => $timestamp,
+        'title'     => $title,
+        'desc'      => $og['og:description'],
+        'site'      => $og['og:site_name'],
+        'image'     => $og['og:image'][0]['og:image:url'],
+        'url'       => $url,
+        'foo'       => $foo,
+        'selection' => $selection
+    );
 
     $dwtpl=pageTemplate(array(parseWikiIdTemplate($data['wikiidtpl'], $data)));
     if ($dwtpl) {
-      $data['wikitpl'] = $dwtpl;
+        $data['wikitpl'] = $dwtpl;
     }
 
     # parse Preset configuration
     $cfg_presets=array();
     foreach (explode(';', trim($this->getConf('presets'))) as $p) {
-      $l=explode('=',$p,2);
-      $d=explode('|',$l[1],2);
-      if (empty($d[0]) || empty($l[0])) continue;
-
-      $tpl='';
-      if (!empty($d[1])) {
-	# TODO: optionally specify template-file instead of 'namespace:_template.txt'
-        #$file = wikiFN($d[1]);
-        #if (@file_exists($file)){
-        #   $tpl = io_readFile($file);
-        # TODO: replace Placeholders alike ../../../inc/common.php pageTemplate() ?!
+        $l=explode('=',$p,2);
+        $d=explode('|',$l[1],2);
+        if (empty($d[0]) || empty($l[0])) continue;
+        $tpl='';
+        if (!empty($d[1])) {
+	        # TODO: optionally specify template-file instead of 'namespace:_template.txt'
+            #$file = wikiFN($d[1]);
+            #if (@file_exists($file)){
+            #   $tpl = io_readFile($file);
+            # TODO: replace Placeholders alike ../../../inc/common.php pageTemplate() ?!
         #} else {
-          $tpl = pageTemplate(array($d[1])); 
+            $tpl = pageTemplate(array($d[1])); 
         #}
-      }
+        }
 
       # allow ID-only presets, if template ns == '-' 
       if (empty($tpl) && $d[1] != '-') {
@@ -220,4 +209,4 @@ class action_plugin_dokubookmark2 extends DokuWiki_Action_Plugin {
     }
   } 
 }
-//Setup VIM: ex: et ts=2 :
+//Setup VIM: ex: et ts=4 :
