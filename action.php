@@ -83,7 +83,9 @@ class action_plugin_dokubookmark2 extends DokuWiki_Action_Plugin {
             'title'     => $title,
             'desc'      => $og['og:description'],
             'site'      => $og['og:site_name'],
+            'type'      => $og['og:type'],
             'image'     => $og['og:image'][0]['og:image:url'],
+            'video'     => $og['og:video'][0]['og:video:url'],
             'url'       => $url,
             'foo'       => $foo,
             'selection' => $selection

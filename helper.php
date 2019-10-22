@@ -70,8 +70,10 @@ function printFooter() { ?>
            str_replace("@T@",$data['title'],
            str_replace("@A@",$data['desc'],
            str_replace("@X@",$data['site'],
+           str_replace("@Y@",$data['type'],
+           str_replace("@V@",$data['video'],
            str_replace("@I@",$data['image'],
-           $idx))))))))
+           $idx))))))))))
     );
 }
 
