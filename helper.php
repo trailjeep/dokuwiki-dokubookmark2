@@ -214,7 +214,7 @@ function printForm ($data, $options, $alltags = NULL) {
         }
 
         $form->addElement(form_makeButton('submit', 'preview', $lang['btn_preview'], array('id'=>'edbtn__preview', 'accesskey'=>'p', 'tabindex'=>'5')));
-        $form->addElement(form_makeButton('submit', 'draftdel', $lang['btn_cancel'], array('tabindex' => '6', 'onclick' => 'window.close()')));
+        $form->addElement(form_makeButton('submit', 'draftdel', $lang['btn_cancel'], array('tabindex' => '6', 'onclick' => 'open("about:blank","_self","").close()')));
         $form->addElement(form_makeCloseTag('div'));
         $form->addElement(form_makeOpenTag('div', array('class'=>'summary')));
         $form->addElement(form_makeTextField('summary', $SUM, $lang['summary'], 'edit__summary', 'nowrap', array('size'=>'50', 'tabindex'=>'2')));
