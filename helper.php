@@ -161,14 +161,14 @@ function printForm ($data, $options, $alltags = NULL) {
             $form->addElement('&nbsp;');
             $additionalJs = '';
             if (!empty($wikitext_)) {
-                $additionalJs = 'document.getElementById(\'wiki__text\').value=\''.escapeJSstring($wikitext_).'\';';
+                $additionalJs = 'getElementById(\'wiki__text\').value=\''.escapeJSstring($wikitext_).'\';';
             }
             $form->addElement(form_makeTag('input', array(
                 'type'    => 'button',
                 'value'   => $n,
                 'class'   => 'button',
                 'title'   => $n,
-                'onclick' => 'document.getElementById(\'i_id\').value=\''.escapeJSstring($id_).'\';document.getElementById(\'id\').value=\''.escapeJSstring($id_).'\';'.$additionalJs
+                'onclick' => 'getElementById(\'i_id\').value=\''.escapeJSstring($id_).'\';getElementById(\'id\').value=\''.escapeJSstring($id_).'\';'.$additionalJs
             )));
 
         $i++;
